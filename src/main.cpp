@@ -7,8 +7,8 @@ int main()
 {
     // Initialization
     //--------------------------------------------------------------------------------------
-    constexpr int screenWidth = 800;
-    constexpr int screenHeight = 450;
+    constexpr int screenWidth = 1280;
+    constexpr int screenHeight = 800;
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 
@@ -36,7 +36,12 @@ int main()
 
         ClearBackground(RAYWHITE);
 
-        DrawRectangle(screenWidth / 2 - 40, playerPosition, 30, 150, BLACK);
+
+
+        //player
+        DrawCircle(screenWidth / 2, screenHeight / 2, 20, BLACK);
+        DrawRectangle(0, screenHeight / 2 - 60, 30, 120, BLACK);
+        DrawRectangle(screenWidth - 35, screenHeight / 2 - 60, 30, 120, BLACK);
 
         EndDrawing();
     }
