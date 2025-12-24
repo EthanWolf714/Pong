@@ -3,6 +3,69 @@
 //------------------------------------------------------------------------------------
 // Program main entry point (C++ conversion)
 //------------------------------------------------------------------------------------
+
+
+//ball class
+class Ball{
+    public:
+    float x, y;
+    int speed_x, speed_y;
+    int radius;
+     
+    void Draw(){
+        //ball
+        DrawCircle(x,y,radius,BLACK);
+    }
+    
+    void Update(){
+        x += speed_x;
+        y += speed_y;
+
+        if(y + radius >= GetScreenHeight() || y - radius <= 0){
+            speed_y *= -1;
+        }
+        if(x + radius >= GetScreenWidth() || x - radius <= 0){
+            speed_x *= -1;
+        }
+    }
+};
+
+class Paddle{
+    public:
+    float x, y;
+    float width, height;
+    int speed;
+
+    void Draw(){
+        //player
+        DrawRectangle(x, y, width, height, BLACK);
+
+    }
+
+    void Update(){
+        // Update
+        if (IsKeyDown(KEY_UP))
+        {
+            y = y - speed;
+
+        }
+        if (IsKeyDown(KEY_DOWN))
+        {
+            y = y + speed;
+        }
+
+        if(y <= 0){
+            y = 0;
+
+        }
+        if(y + height >= GetScreenHeight()){
+            y = GetScreenHeight() - height;
+        }
+    }
+};
+
+Ball ball;
+Paddle player;
 int main()
 {
     // Initialization
@@ -12,36 +75,42 @@ int main()
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 
-    int playerPosition = screenHeight / 2 - 40;
-    int moveSpeed = 10;
+  
 
     SetTargetFPS(60); // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
 
+    ball.radius = 20;
+    ball.x = screenWidth / 2;
+    ball.y = screenHeight / 2;
+    ball.speed_x = 7;
+    ball.speed_y = 7;
+
+    player.width = 25;
+    player.height = 120;
+    player.x = screenWidth - player.width - 10;
+    player.y = screenHeight/2 - player.height/2;
+    player.speed = 6;
     // Main game loop
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
-        // Update
-        if (IsKeyDown(KEY_UP))
-        {
-            playerPosition -= 2 * moveSpeed;
-        }
-        if (IsKeyDown(KEY_DOWN))
-        {
-            playerPosition += 2 * moveSpeed;
-        }
+        
 
         // Draw
         BeginDrawing();
 
+        //update ball 
+        ball.Update();
+        player.Update();
+
         ClearBackground(RAYWHITE);
 
-
-
-        //player
-        DrawCircle(screenWidth / 2, screenHeight / 2, 20, BLACK);
-        DrawRectangle(0, screenHeight / 2 - 60, 30, 120, BLACK);
-        DrawRectangle(screenWidth - 35, screenHeight / 2 - 60, 30, 120, BLACK);
+        //divider
+        DrawLine(screenWidth/2, 0, screenWidth/2, screenHeight, BLACK);
+        ball.Draw();
+        player.Draw();
+        DrawRectangle(10, screenHeight / 2 - 60, 25, 120, BLACK);
+        
 
         EndDrawing();
     }
