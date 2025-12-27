@@ -3,7 +3,8 @@
 //------------------------------------------------------------------------------------
 // Program main entry point (C++ conversion)
 //------------------------------------------------------------------------------------
-
+int player_score = 0;
+int cpu_score = 0;
 
 //ball class
 class Ball{
@@ -27,10 +28,10 @@ class Ball{
             speed_y *= -1;
         }
         if(x + radius >= GetScreenWidth()){ //cpu wins
-           // cpu_score++;
+           cpu_score++;
         }
-        if(x + radius >= GetScreenWidth() || x - radius <= 0){
-            speed_x *= -1;
+        if(x -radius <= 0){
+            player_score++;
         }
     }
 };
@@ -159,7 +160,8 @@ int main()
         ball.Draw();
         player.Draw();
         cpu.Draw();
-        
+        DrawText(TextFormat("%i",cpu_score), screenWidth/4 - 20, 20,80,BLACK);
+        DrawText(TextFormat("%i",player_score), 3*screenWidth/4 - 20, 20,80,BLACK);
         
 
         EndDrawing();
