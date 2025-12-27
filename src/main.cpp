@@ -26,13 +26,27 @@ class Ball{
         if(y + radius >= GetScreenHeight() || y - radius <= 0){
             speed_y *= -1;
         }
+        if(x + radius >= GetScreenWidth()){ //cpu wins
+           // cpu_score++;
+        }
         if(x + radius >= GetScreenWidth() || x - radius <= 0){
             speed_x *= -1;
         }
     }
 };
 
+//paddle class
 class Paddle{
+    protected:
+    void LimitMovement(){
+        if(y <= 0){
+            y = 0;
+
+        }
+        if(y + height >= GetScreenHeight()){
+            y = GetScreenHeight() - height;
+        }
+    }
     public:
     float x, y;
     float width, height;
@@ -55,18 +69,30 @@ class Paddle{
             y = y + speed;
         }
 
-        if(y <= 0){
-            y = 0;
-
-        }
-        if(y + height >= GetScreenHeight()){
-            y = GetScreenHeight() - height;
-        }
+        LimitMovement();
     }
 };
 
+
+class CpuPaddle: public Paddle{
+    public:
+
+    void Update(int ball_y){
+        if(y + height / 2 > ball_y){
+            y = y - speed;
+        }
+        if(y + height /  2 <= ball_y){
+            y = y + speed;
+        }
+        LimitMovement();
+    }
+};
+
+
 Ball ball;
 Paddle player;
+CpuPaddle cpu;
+
 int main()
 {
     // Initialization
@@ -95,6 +121,12 @@ int main()
     player.y = screenHeight/2 - player.height/2;
     player.speed = 6;
 
+    cpu.width = 25;
+    cpu.height = 120;
+    cpu.x = 10;
+    cpu.y = screenHeight / 2 - cpu.height / 2;
+    cpu.speed = 6;
+
     // Main game loop
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
@@ -108,13 +140,26 @@ int main()
         //Update Player
         player.Update();
 
+        cpu.Update(ball.y);
+
+        if(CheckCollisionCircleRec(Vector2{ball.x, ball.y}, ball.radius, Rectangle{player.x, player.y, player.width, player.height})){
+            ball.speed_x *= -1;
+        }
+
+        if(CheckCollisionCircleRec(Vector2{ball.x, ball.y}, ball.radius, Rectangle{cpu.x, cpu.y, cpu.width, cpu.height})){
+            ball.speed_x *= -1;
+        }
+
+
+
         ClearBackground(RAYWHITE);
 
     
         DrawLine(screenWidth/2, 0, screenWidth/2, screenHeight, BLACK);
         ball.Draw();
         player.Draw();
-        DrawRectangle(10, screenHeight / 2 - 60, 25, 120, BLACK);
+        cpu.Draw();
+        
         
 
         EndDrawing();
