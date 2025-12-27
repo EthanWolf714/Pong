@@ -3,6 +3,13 @@
 //------------------------------------------------------------------------------------
 // Program main entry point (C++ conversion)
 //------------------------------------------------------------------------------------
+
+Color Blue = Color{0,0,255, 255};
+Color Dark_Blue = Color{0,0,139, 255};
+
+Color Light_Blue = Color{173,216,230,255};
+Color Yellow = Color{243, 213, 91, 255};
+
 int player_score = 0;
 int cpu_score = 0;
 
@@ -15,7 +22,7 @@ class Ball{
      
     void Draw(){
         //ball
-        DrawCircle(x,y,radius,BLACK);
+        DrawCircle(x,y,radius,Yellow);
     }
     
     void Update(){
@@ -27,18 +34,33 @@ class Ball{
         if(y + radius >= GetScreenHeight() || y - radius <= 0){
             speed_y *= -1;
         }
+
+        //scoreing
         if(x + radius >= GetScreenWidth()){ //cpu wins
            cpu_score++;
+           ResetBall();
         }
         if(x -radius <= 0){
             player_score++;
+            ResetBall();
         }
+    }
+    
+    //Resets the ball to the center after scoreing
+    void ResetBall(){
+        x = GetScreenWidth() / 2;
+        y = GetScreenHeight() / 2;
+        int speed_choices[2] = {-1,1};
+
+        speed_x *= speed_choices[GetRandomValue(0,1)];
+        speed_y *= speed_choices[GetRandomValue(0,1)];
     }
 };
 
 //paddle class
 class Paddle{
     protected:
+    //limits the movement when the paddle hits the edge of the screen
     void LimitMovement(){
         if(y <= 0){
             y = 0;
@@ -54,7 +76,8 @@ class Paddle{
     int speed;
 
     void Draw(){
-        DrawRectangle(x, y, width, height, BLACK);
+        //rounds the edges of the rectangle
+        DrawRectangleRounded(Rectangle{x,y, width, height}, 0.8, 0, WHITE);
 
     }
 
@@ -153,8 +176,9 @@ int main()
 
 
 
-        ClearBackground(RAYWHITE);
-
+        ClearBackground(Dark_Blue);
+        DrawRectangle(screenWidth/2, 0, screenWidth/2, screenHeight, Blue);
+        DrawCircle(screenWidth/2, screenHeight/2, 150, Light_Blue);
     
         DrawLine(screenWidth/2, 0, screenWidth/2, screenHeight, BLACK);
         ball.Draw();
